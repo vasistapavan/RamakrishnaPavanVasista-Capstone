@@ -2,7 +2,7 @@ function StockList() {
   return (
     <section>
       <h1>Stock List</h1>
-      <h2>No stocks added yet.</h2>
+      <h3>No stocks added yet.</h3>
     </section>
   );
 }
