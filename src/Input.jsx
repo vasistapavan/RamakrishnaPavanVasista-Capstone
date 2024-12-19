@@ -1,24 +1,36 @@
 import { useState } from "react";
 import form from "react";
 
-function Input() {
-  const [stockSymbol, setStockSymbol] = useState("");
-
+function Input(props) {
   function handleEvent() {
-    let symbol = document.getElementById("sym").value;
-    console.log("stock symbol is " + symbol);
-    document.getElementById("sym").value = "";
+    console.log("Inside input");
+    if (document.getElementById("symbol").value.trim() !== "") {
+      props.setUserStockList([
+        ...props.userStockList,
+        [
+          document.getElementById("symbol").value,
+          document.getElementById("quantity").value,
+          document.getElementById("buyPrice").value,
+        ],
+      ]);
+    }
+    //console.log(stockList);
+    document.getElementById("symbol").value = "";
+    document.getElementById("quantity").value = "";
+    document.getElementById("buyPrice").value = "";
   }
 
   return (
-    <div className="input-flex">
-      <input type="text" placeholder="Stock Symbol" id="sym"></input>
-      <input type="text" placeholder="Quantity"></input>
-      <input type="text" placeholder="Purchase Price"></input>
-      <button type="button" onClick={handleEvent}>
-        Add Stock
-      </button>
-    </div>
+    <>
+      <form className="input-flex">
+        <input type="text" placeholder="Stock Symbol" id="symbol"></input>
+        <input type="number" placeholder="Quantity" id="quantity"></input>
+        <input type="number" placeholder="Purchase Price" id="buyPrice"></input>
+        <button type="button" onClick={handleEvent}>
+          Add Stock
+        </button>
+      </form>
+    </>
   );
 }
 
