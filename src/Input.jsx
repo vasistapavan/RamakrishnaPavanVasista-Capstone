@@ -1,20 +1,22 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import form from "react";
+import StockList from "./stocklist.jsx";
+import StockContext from "./contexts/StockContext.js";
 
-function Input(props) {
+function Input() {
+  const { newStock, setNewStock, stockList, setStockList } =
+    useContext(StockContext);
+
   function handleEvent() {
-    console.log("Inside input");
+    let symbol = document.getElementById("symbol").value;
+    let purchasePrice = document.getElementById("buyPrice").value;
+    let quantity = document.getElementById("quantity").value;
     if (document.getElementById("symbol").value.trim() !== "") {
-      props.setUserStockList([
-        ...props.userStockList,
-        [
-          document.getElementById("symbol").value,
-          document.getElementById("quantity").value,
-          document.getElementById("buyPrice").value,
-        ],
-      ]);
+      //setNewStock({ symbol, purchasePrice, quantity });
+      setStockList([...stockList, { symbol, purchasePrice, quantity }]);
+      setNewStock({ symbol, purchasePrice, quantity });
     }
-    //console.log(stockList);
+
     document.getElementById("symbol").value = "";
     document.getElementById("quantity").value = "";
     document.getElementById("buyPrice").value = "";

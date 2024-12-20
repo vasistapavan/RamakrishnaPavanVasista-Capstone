@@ -1,24 +1,29 @@
-import { useEffect, useState } from "react";
-import StockCurrentPrice from "./StockCurrentPrice.jsx";
+import { useContext } from "react";
+import StockContext from "./contexts/StockContext.js";
+import UpdateStockPrices from "./StockCurrentPrice.jsx";
 
-function StockList(props) {
-  let no_of_stocks = props.userStockList.length;
-  console.log("Inside StockList: " + props.userStockList);
+function StockList() {
+  const { stockList } = useContext(StockContext);
+  let no_of_stocks = stockList.length;
+  console.log(no_of_stocks);
+  // console.log(
+  //   "Inside StockList: " + props.stockList + " " + props.stockList.length
+  // );
 
   return (
     <>
       <h2>Stock List</h2>
       {no_of_stocks ? (
         <ul className="stock-list">
-          {props.userStockList.map((stockData) => {
-            return stockData.length > 0 ? (
+          {stockList.map((stockData) => {
+            console.log(Object.keys(stockData).length);
+            return Object.keys(stockData).length > 0 ? (
               <>
                 <li className="stock">
-                  <p>Symbol: {stockData[0]}</p>
-                  <p>Quantity: {stockData[1]}</p>
-                  <p>Purchase Price: {stockData[2]}</p>
-                  <p>Current Price: {stockData[3]}</p>
-                  <p id="pnl">Profit/Loss: {stockData[4]}</p>
+                  <p>Symbol: {stockData["symbol"]}</p>
+                  <p>Quantity: {stockData["quantity"]}</p>
+                  <p>Purchase Price: {stockData["purchasePrice"]}</p>
+                  <UpdateStockPrices stock={stockData} />
                 </li>
               </>
             ) : (

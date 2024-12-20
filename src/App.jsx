@@ -2,20 +2,22 @@ import { useState } from "react";
 import "./App.css";
 import Header from "./header.jsx";
 import Input from "./Input.jsx";
+import StockContext from "./contexts/StockContext.js";
 import StockList from "./stocklist.jsx";
-import StockCurrentPrice from "./StockCurrentPrice.jsx";
 
 function App() {
-  const [userStockList, setUserStockList] = useState([]);
+  const [stockList, setStockList] = useState([]);
+  const [newStock, setNewStock] = useState({});
 
   return (
     <div className="main">
       <Header />
-      <Input
-        userStockList={userStockList}
-        setUserStockList={setUserStockList}
-      />
-      <StockList userStockList={userStockList} />
+      <StockContext.Provider
+        value={{ stockList, setStockList, newStock, setNewStock }}
+      >
+        <Input />
+        <StockList />
+      </StockContext.Provider>
     </div>
   );
 }
