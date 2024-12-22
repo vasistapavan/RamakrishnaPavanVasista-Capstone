@@ -4,17 +4,19 @@ import StockList from "./stocklist.jsx";
 import StockContext from "./contexts/StockContext.js";
 
 function Input() {
-  const { newStock, setNewStock, stockList, setStockList } =
-    useContext(StockContext);
+  const { stockList, setStockList } = useContext(StockContext);
 
   function handleEvent() {
-    let symbol = document.getElementById("symbol").value;
-    let purchasePrice = document.getElementById("buyPrice").value;
-    let quantity = document.getElementById("quantity").value;
     if (document.getElementById("symbol").value.trim() !== "") {
       //setNewStock({ symbol, purchasePrice, quantity });
-      setStockList([...stockList, { symbol, purchasePrice, quantity }]);
-      setNewStock({ symbol, purchasePrice, quantity });
+      setStockList([
+        ...stockList,
+        {
+          symbol: document.getElementById("symbol").value,
+          purchasePrice: document.getElementById("buyPrice").value,
+          quantity: document.getElementById("quantity").value,
+        },
+      ]);
     }
 
     document.getElementById("symbol").value = "";
