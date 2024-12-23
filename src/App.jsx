@@ -7,14 +7,11 @@ import StockList from "./stocklist.jsx";
 
 function App() {
   const [stockList, setStockList] = useState([]);
-  const [newStock, setNewStock] = useState({});
 
   return (
     <div className="main">
       <Header />
-      <StockContext.Provider
-        value={{ stockList, setStockList, newStock, setNewStock }}
-      >
+      <StockContext.Provider value={{ stockList, setStockList }}>
         <Input />
         <StockList />
       </StockContext.Provider>
