@@ -1,9 +1,9 @@
 import { useState } from "react";
 import "./App.css";
-import Header from "./header.jsx";
-import Input from "./Input.jsx";
+import Header from "./components/Header.jsx";
+import Input from "./components/Input.jsx";
 import StockContext from "./contexts/StockContext.js";
-import StockList from "./stocklist.jsx";
+import StockList from "./components/StockList.jsx";
 
 function App() {
   const [stockList, setStockList] = useState([]);

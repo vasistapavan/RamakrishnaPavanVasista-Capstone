@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 
-function UpdateStockPrices(prop) {
+function UpdateStockPrice(prop) {
   // const { newStock, setStockList, stockList } = useContext(StockContext);
 
   const [stock, setStock] = useState(prop.stock);
   const [price, setPrice] = useState(0);
   const [pnl, setPNL] = useState(0);
+  const [load, setLoad] = useState("false");
 
   useEffect(() => {
     // fetch(
@@ -18,7 +19,7 @@ function UpdateStockPrices(prop) {
         "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
       ).then((res) => res.json());
     };
-
+    console.log("first: " + load);
     //set Current Price for the stock from API
     handleFetch(stock["symbol"]).then((body) =>
       setPrice(body["Global Quote"]["05. price"])
@@ -33,18 +34,28 @@ function UpdateStockPrices(prop) {
         ).toFixed(2)
       )
     );
+
+    setLoad(2);
+    console.log("second: " + load);
   }, [stock]);
 
-  return (
+  return load ? (
     <>
-      <p>Current Price: {price}</p>
-      {pnl >= 0 ? (
-        <p style={{ color: "green" }}>Profit/Loss: {pnl}</p>
-      ) : (
-        <p style={{ color: "red" }}>Profit/Loss: {pnl}</p>
-      )}
+      <li className="stock">
+        <p>Symbol: {stock["symbol"]}</p>
+        <p>Quantity: {stock["quantity"]}</p>
+        <p>Purchase Price: {stock["purchasePrice"]}</p>
+        <p>Current Price: {price}</p>
+        {pnl >= 0 ? (
+          <p style={{ color: "green" }}>Profit/Loss: {pnl}</p>
+        ) : (
+          <p style={{ color: "red" }}>Profit/Loss: {pnl}</p>
+        )}
+      </li>
     </>
+  ) : (
+    <>This is loading</>
   );
 }
 
-export default UpdateStockPrices;
+export default UpdateStockPrice;

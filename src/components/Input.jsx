@@ -1,7 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import form from "react";
-import StockList from "./stocklist.jsx";
-import StockContext from "./contexts/StockContext.js";
+import { useContext } from "react";
+import StockContext from "../contexts/StockContext.js";
 
 function Input() {
   const { stockList, setStockList } = useContext(StockContext);
