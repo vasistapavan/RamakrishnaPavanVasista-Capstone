@@ -1,61 +1,37 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import StockContext from "../contexts/StockContext";
 
-function UpdateStockPrice(prop) {
-  // const { newStock, setStockList, stockList } = useContext(StockContext);
+function UpdateStockPrice() {
+  const { stockList, setIsUpdated } = useContext(StockContext);
 
-  const [stock, setStock] = useState(prop.stock);
-  const [price, setPrice] = useState(0);
-  const [pnl, setPNL] = useState(0);
-  const [load, setLoad] = useState("false");
+  const fetchApiPrice = async (symbol) => {
+    try {
+      let res = await fetch(
+        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+          symbol +
+          "&apikey=EKD0K8D419Y6KJ6O"
+      );
+      let res_json = await res.json();
+      let price = res_json["Global Quote"]["05. price"];
+      return price;
+    } catch (error) {
+      return 234.56; //send a dummy price if API limit is reached.
+    }
+  };
 
   useEffect(() => {
-    // fetch(
-    //   "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-    //     stock["symbol"] +
-    //     "&apikey=EKD0K8D419Y6KJ6O"
-    // )
-    const handleFetch = async (symbol) => {
-      return fetch(
-        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
-      ).then((res) => res.json());
+    const updatestocks = async () => {
+      for (let stock of stockList) {
+        let price = await fetchApiPrice(stock["symbol"]);
+        stock["currentPrice"] = price;
+      }
     };
-    console.log("first: " + load);
-    //set Current Price for the stock from API
-    handleFetch(stock["symbol"]).then((body) =>
-      setPrice(body["Global Quote"]["05. price"])
-    );
+    setIsUpdated(false);
+    updatestocks();
+    setIsUpdated(true);
+  }, [stockList]);
 
-    //Calculate PNL based on current price
-    handleFetch(stock["symbol"]).then((body) =>
-      setPNL(
-        (
-          stock["quantity"] *
-          (body["Global Quote"]["05. price"] - stock["purchasePrice"])
-        ).toFixed(2)
-      )
-    );
-
-    setLoad(2);
-    console.log("second: " + load);
-  }, [stock]);
-
-  return load ? (
-    <>
-      <li className="stock">
-        <p>Symbol: {stock["symbol"]}</p>
-        <p>Quantity: {stock["quantity"]}</p>
-        <p>Purchase Price: {stock["purchasePrice"]}</p>
-        <p>Current Price: {price}</p>
-        {pnl >= 0 ? (
-          <p style={{ color: "green" }}>Profit/Loss: {pnl}</p>
-        ) : (
-          <p style={{ color: "red" }}>Profit/Loss: {pnl}</p>
-        )}
-      </li>
-    </>
-  ) : (
-    <>This is loading</>
-  );
+  return <></>;
 }
 
 export default UpdateStockPrice;
