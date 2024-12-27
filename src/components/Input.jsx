@@ -3,23 +3,23 @@ import StockContext from "../contexts/StockContext";
 
 function Input() {
   const { setStockList } = useContext(StockContext);
-  //const [stockList, setStockList] = useState([]);
-  const fetchPriceFromAPI = async (symbol) => {
+  const fetchAPIFunc = async (symbol) => {
     try {
       let res = await fetch(
-        //    "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
-        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-          symbol +
-          "&apikey=EKD0K8D419Y6KJ6O"
+        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
+        // "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+        //   symbol +
+        //   "&apikey=EKD0K8D419Y6KJ6O"
       );
       let res_json = await res.json();
-      console.log(res_json);
+      console.log(res_json["Information"]);
       let price = res_json["Global Quote"]["05. price"];
       return price;
     } catch (err) {
-      console.log("Invalid Symbol");
-      //return null;
-      return 234.56;
+      console.log("API ERROR. Returning a dummy price");
+      console.log(err);
+      return undefined;
+      //return 234.56;
     }
   };
 
@@ -27,10 +27,10 @@ function Input() {
     let symbol = document.getElementById("symbol").value;
     let quantity = document.getElementById("quantity").value;
     let price = document.getElementById("purchasePrice").value;
-    let currentPrice = await fetchPriceFromAPI(symbol);
-    console.log(currentPrice);
+    let currentPrice = await fetchAPIFunc(symbol);
 
-    if (currentPrice !== null && typeof currentPrice !== "undefined") {
+    if (typeof currentPrice !== "undefined" && symbol != "") {
+      console.log("Adding stock: " + symbol + " to stockList");
       setStockList((prevState) => [
         ...prevState,
         {

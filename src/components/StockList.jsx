@@ -1,11 +1,10 @@
 import { useContext } from "react";
 import StockContext from "../contexts/StockContext.js";
 
-function StockList() {
+function StockList({ stockCount }) {
   const { stockList, isUpdated } = useContext(StockContext);
 
   let no_of_stocks = stockList.length;
-
   if (no_of_stocks === 0) {
     return (
       <>
@@ -18,8 +17,9 @@ function StockList() {
   return (
     <>
       <h2>Stock List</h2>
-      {isUpdated && (
+      {isUpdated === true && (
         <ul>
+          {console.log("Listing Stocks")}
           {stockList.map((stock, index) => {
             let pnl = (
               (stock["currentPrice"] - stock["purchasePrice"]) *

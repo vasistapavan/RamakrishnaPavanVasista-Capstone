@@ -13,7 +13,12 @@ function App() {
   return (
     <div className="main">
       <StockContext.Provider
-        value={{ stockList, setStockList, isUpdated, setIsUpdated }}
+        value={{
+          stockList,
+          setStockList,
+          isUpdated,
+          setIsUpdated,
+        }}
       >
         <Header />
         <Input />
