@@ -6,10 +6,10 @@ function Input() {
   const fetchAPIFunc = async (symbol) => {
     try {
       let res = await fetch(
-        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
-        // "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-        //   symbol +
-        //   "&apikey=EKD0K8D419Y6KJ6O"
+        //"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
+        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+          symbol +
+          "&apikey=EKD0K8D419Y6KJ6O"
       );
       let res_json = await res.json();
       console.log(res_json["Information"]);
