@@ -8,7 +8,7 @@ import UpdateStockPrice from "./components/UpdateStockPrice.jsx";
 
 function App() {
   const [stockList, setStockList] = useState([]);
-  const [isUpdated, setIsUpdated] = useState(false);
+  const [updatedStockList, setUpdatedStockList] = useState([]);
 
   return (
     <div className="main">
@@ -16,13 +16,12 @@ function App() {
         value={{
           stockList,
           setStockList,
-          isUpdated,
-          setIsUpdated,
+          updatedStockList,
+          setUpdatedStockList,
         }}
       >
         <Header />
         <Input />
-        <UpdateStockPrice />
         <StockList />
       </StockContext.Provider>
     </div>

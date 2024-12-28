@@ -1,35 +1,55 @@
-import { useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import StockContext from "../contexts/StockContext";
+import UpdateStockPrice from "./UpdateStockPrice";
 
 function Input() {
-  const { setStockList } = useContext(StockContext);
-  const fetchAPIFunc = async (symbol) => {
-    try {
-      let res = await fetch(
-        "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
-        // "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-        //   symbol +
-        //   "&apikey=EKD0K8D419Y6KJ6O"
-      );
-      let res_json = await res.json();
-      console.log(res_json["Information"]);
-      let price = res_json["Global Quote"]["05. price"];
-      return price;
-    } catch (err) {
-      console.log("API ERROR. Returning a dummy price");
-      console.log(err);
-      return undefined;
-      //return 234.56;
-    }
-  };
+  const { setStockList, stockList, setUpdatedStockList } =
+    useContext(StockContext);
+
+  const fetchAPIFunc = useCallback(async (symbol) => {
+    let price = fetch(
+      //"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
+      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+        symbol +
+        "&apikey=EKD0K8D419Y6KJ6O"
+    )
+      .then((res) => res.json())
+      .then((res_json) => {
+        console.log(res_json["Information"]);
+        return res_json["Global Quote"]["05. price"];
+      })
+      .catch((error) => {
+        console.log("API ERROR: " + error);
+        return undefined;
+      });
+    return price;
+    //return 234.56;
+  }, []);
+
+  useEffect(() => {
+    setUpdatedStockList(
+      stockList.map((stock) => {
+        fetchAPIFunc(stock["symbol"]).then((p) => {
+          stock["currentPrice"] = p;
+        });
+        console.log("Displaying the stock after updating price:");
+        console.log(stock);
+        return { ...stock };
+      })
+    );
+    console.log("Stock prices updated");
+  }, [stockList]);
 
   const handleStockUpdate = async () => {
     let symbol = document.getElementById("symbol").value;
     let quantity = document.getElementById("quantity").value;
     let price = document.getElementById("purchasePrice").value;
-    let currentPrice = await fetchAPIFunc(symbol);
+    let currentPrice = 0;
+    if (symbol !== "") {
+      currentPrice = await fetchAPIFunc(symbol);
+    }
 
-    if (typeof currentPrice !== "undefined" && symbol != "") {
+    if (typeof currentPrice !== "undefined" && currentPrice != 0) {
       console.log("Adding stock: " + symbol + " to stockList");
       setStockList((prevState) => [
         ...prevState,
