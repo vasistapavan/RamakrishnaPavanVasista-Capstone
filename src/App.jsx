@@ -8,6 +8,7 @@ import StockList from "./components/StockList.jsx";
 function App() {
   const [stockList, setStockList] = useState([]);
   const [updatedStockList, setUpdatedStockList] = useState([]);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   return (
     <div className="main">
@@ -17,6 +18,8 @@ function App() {
           setStockList,
           updatedStockList,
           setUpdatedStockList,
+          isUpdated,
+          setIsUpdated,
         }}
       >
         <Header />

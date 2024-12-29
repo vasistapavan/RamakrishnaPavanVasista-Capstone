@@ -1,17 +1,17 @@
 import { useCallback, useContext, useEffect } from "react";
 import StockContext from "../contexts/StockContext";
-import UpdateStockPrice from "./UpdateStockPrice";
 
 function Input() {
-  const { setStockList, stockList, setUpdatedStockList } =
+  const { setStockList, stockList, setUpdatedStockList, setIsUpdated } =
     useContext(StockContext);
 
-  const fetchAPIFunc = useCallback(async (symbol) => {
+  const fetchAPIFunc = useCallback((symbol) => {
+    setIsUpdated(false);
     let price = fetch(
-      //"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
-      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-        symbol +
-        "&apikey=EKD0K8D419Y6KJ6O"
+      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
+      // "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+      //   symbol +
+      //   "&apikey=EKD0K8D419Y6KJ6O"
     )
       .then((res) => res.json())
       .then((res_json) => {
@@ -20,36 +20,41 @@ function Input() {
       })
       .catch((error) => {
         console.log("API ERROR: " + error);
+        alert("Invalid Symbol or API limit breached. Returning a dummy price");
         return undefined;
       });
+    setIsUpdated(true);
     return price;
     //return 234.56;
   }, []);
 
   useEffect(() => {
-    setUpdatedStockList(
-      stockList.map((stock) => {
-        fetchAPIFunc(stock["symbol"]).then((p) => {
-          stock["currentPrice"] = p;
-        });
-        console.log("Displaying the stock after updating price:");
+    let newSL = stockList.map((stock) => {
+      fetchAPIFunc(stock["symbol"]).then((p) => {
+        stock["currentPrice"] = p;
         console.log(stock);
-        return { ...stock };
-      })
-    );
+      });
+      console.log("Displaying the stock after updating price:");
+      console.log(stock);
+      return { ...stock };
+    });
+
+    setUpdatedStockList(newSL);
+
     console.log("Stock prices updated");
   }, [stockList]);
 
   const handleStockUpdate = async () => {
+    setIsUpdated(false);
     let symbol = document.getElementById("symbol").value;
     let quantity = document.getElementById("quantity").value;
     let price = document.getElementById("purchasePrice").value;
-    let currentPrice = 0;
-    if (symbol !== "") {
-      currentPrice = await fetchAPIFunc(symbol);
-    }
+    let currentPrice = undefined;
+    // if (symbol !== "") {
+    //   currentPrice = await fetchAPIFunc(symbol);
+    // }
 
-    if (typeof currentPrice !== "undefined" && currentPrice != 0) {
+    if (symbol !== "") {
       console.log("Adding stock: " + symbol + " to stockList");
       setStockList((prevState) => [
         ...prevState,
