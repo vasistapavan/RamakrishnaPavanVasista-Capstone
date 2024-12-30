@@ -4,10 +4,10 @@ import Header from "./components/Header.jsx";
 import Input from "./components/Input.jsx";
 import StockContext from "./contexts/StockContext.js";
 import StockList from "./components/StockList.jsx";
-import UpdateStockPrice from "./components/UpdateStockPrice.jsx";
 
 function App() {
   const [stockList, setStockList] = useState([]);
+  const [updatedStockList, setUpdatedStockList] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
 
   return (
@@ -16,13 +16,14 @@ function App() {
         value={{
           stockList,
           setStockList,
+          updatedStockList,
+          setUpdatedStockList,
           isUpdated,
           setIsUpdated,
         }}
       >
         <Header />
         <Input />
-        <UpdateStockPrice />
         <StockList />
       </StockContext.Provider>
     </div>
