@@ -4,23 +4,30 @@ import StockContext from "../contexts/StockContext";
 function Input() {
   const { setStockList, stockList, setUpdatedStockList, setIsUpdated } =
     useContext(StockContext);
+  const API_KEY = "EKD0K8D419Y6KJ6O";
 
   const fetchAPIFunc = useCallback((symbol) => {
     setIsUpdated(false);
     let price = fetch(
-      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
-      // "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-      //   symbol +
-      //   "&apikey=EKD0K8D419Y6KJ6O"
+      // "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo"
+      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+        symbol +
+        "&apikey=" +
+        API_KEY
     )
       .then((res) => res.json())
       .then((res_json) => {
-        console.log(res_json["Information"]);
-        return res_json["Global Quote"]["05. price"];
+        if (res_json["Information"]) {
+          throw new Error("API Limit Breached");
+        } else if (!res_json["Global Quote"]["05. price"]) {
+          throw new Error("Invalid Stock Symbol");
+        } else {
+          return res_json["Global Quote"]["05. price"];
+        }
       })
       .catch((error) => {
-        console.log("API ERROR: " + error);
-        alert("Invalid Symbol or API limit breached. Returning a dummy price");
+        console.error("API ERROR: " + error);
+        alert(error);
         return undefined;
       });
     setIsUpdated(true);
@@ -50,11 +57,11 @@ function Input() {
     let quantity = document.getElementById("quantity").value;
     let price = document.getElementById("purchasePrice").value;
     let currentPrice = undefined;
-    // if (symbol !== "") {
-    //   currentPrice = await fetchAPIFunc(symbol);
-    // }
-
     if (symbol !== "") {
+      currentPrice = await fetchAPIFunc(symbol);
+    }
+
+    if (symbol !== "" && typeof currentPrice !== "undefined") {
       console.log("Adding stock: " + symbol + " to stockList");
       setStockList((prevState) => [
         ...prevState,
